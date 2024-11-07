@@ -55,7 +55,7 @@ exports.decodeSpecialCharsInObj = void 0;
 var input = {
     test: "Hello World",
     data: {
-        title: "Since the first cases of pandemic (H1N1) 2009 influenza were reported in April, the notification requirements under Article 6 of the International Health Regulations (IHR) (2005) have been widely used to ensure the timely reporting of laboratory-confirmed cases from National Authorities through National IHR Focal Points (NFPs) from countries around the world.Â  As of 10 July, WHO had recorded over 104,000 cases, including 466 deaths, worldwide.Â  Some countries are reaching the peak of their first pandemic wave while others have yet to report cases.Â  The evolving epidemiological situation requires a change in the approach to virological and epidemiological surveillance from confirming every case and daily reports of aggregated data, to testing a sample of clinical specimens and monitoring the pandemic using indicators of acute respiratory illness at population level.Â  Updated WHO guidance on surveillance needs during the pandemic are described in the updated WHO guidance Human infection with pandemic (H1N1) 2009 virus: Updated interim WHO guidance on global surveillance [http://www.who.int/csr/disease/swineflu/notes/h1n1_surveillance_20090710/en/index.html].Â  WHO recommends that all countries continue to carry out event-based surveillance (e.g. clusters of acute respiratory disease and deaths) as well as starting pandemic monitoring.Â  Monitoring deaths associated with acute respiratory disease is important throughout the pandemics. At this time, National Authorities and WHO IHR Contact Points in the WHO Regional Offices may consider supplementing direct communications with the NFPs with additional arrangements for communicating the requested surveillance information to WHO. Where there are specific regional arrangements being implemented, WHO Regional Offices will inform NFPs and other national authorities concerned. Surveillance information may be provided through official websites, contact points in surveillance units, National Influenza Centres (NICs) or other appropriate structure, while NFPs should remain fully informed in compliance with paragraph 2 of Article 6 of the IHR. If an information source other than the NFP is selected as the reporting mechanism, the NFP must inform WHO IHR Contact Points*, with copy to WHO Headquarters (ihradmin@who.int), of the new arrangements before implementation.Â  Throughout the pandemic, WHO will continue to communicate directly with the NFPs to request specific information for risk assessment and risk management.",
+        title: "<P>The Emergency Committee held its fifth meeting, via e-mail, concluding on 23 September 2009. </P><P>The Committee considered a proposal from the WHO Director-General regarding the continuation of three temporary recommendations issued under the IHR with respect to the on-going public health emergency of international concern.Â  There was a consensus on continuing the three temporary recommendations proposed by the Director-General. </P><P>Having considered the views of the Emergency Committee, and the ongoing pandemic situation, the Director-General determined it was appropriate to continue these temporary recommendations, namely:</P><UL><LI>Countries should not close borders or restrict international traffic and trade</LI><LI>Intensify surveillance of unusual flu-like illness & severe pneumonia</LI><LI>If ill, it is prudent to delay international travel -- if ill after travel seek care</LI></UL>",
         date: "2023-09-19",
         eventId: "E0001-38983",
         country: "TÃ¼rkiye",
@@ -65,14 +65,25 @@ var input = {
 // const result = convertWeirdCharacters(input);
 // console.log(JSON.stringify(result, null, 2));
 var decodeSpecialCharsInObj = function (obj) {
-    return Object.fromEntries(Object.entries(obj).map(function (_a) {
+    var decodedEntries = Object.entries(obj).map(function (_a) {
         var key = _a[0], value = _a[1];
-        return [
-            key,
-            decodeURIComponent(escape(value)),
-        ];
-    }));
+        try {
+            // Attempt to decode the value
+            var decodedValue = decodeURIComponent(escape(value));
+            // If successful, return the decoded value
+            return [key, decodedValue];
+        }
+        catch (error) {
+            console.error("Error decoding ".concat(value, ": ").concat(error));
+            // If decoding fails, return the original value
+            return [key, value];
+        }
+    });
+    return Object.fromEntries(decodedEntries);
 };
 exports.decodeSpecialCharsInObj = decodeSpecialCharsInObj;
+var escapeURI = function (str) {
+    return encodeURIComponent(str).replace(/[!'()*]/g, function (c) { return "%".concat(c.charCodeAt(0).toString(16)); });
+};
 input.data = (0, exports.decodeSpecialCharsInObj)(input.data);
 console.log(input);
